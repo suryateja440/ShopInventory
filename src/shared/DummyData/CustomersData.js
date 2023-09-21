@@ -1,6 +1,4 @@
 const data = [
-
-
                 {
                 "CustomerID" : "qwertyu",
                 "ShopName": "Sri Srinivasa Jewellery Mart",
@@ -32,6 +30,15 @@ const data = [
                 "Mobile": "+91 6305562656",
                 "City": "Vinukonda",
                 "PinCode": "522647"
+                },
+                {
+                "CustomerID" : "asdfghjxcv sssd bnm",
+                "ShopName": "Sri Srinivasa Jewellery Mart Surya",
+                "Name": "Sudharsana Rao",
+                "Mobile": "+91 6305562656",
+                "City": "Vinukonda",
+                "PinCode": "500018"
                 }
+
             ];
 export const customersData = data;

@@ -1,6 +1,4 @@
 import * as React from 'react';
-import AspectRatio from '@mui/joy/AspectRatio';
-import Link from '@mui/joy/Link';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Chip from '@mui/joy/Chip';
@@ -18,7 +16,6 @@ const CardList = (props) => {
       sx={{
         width: "75%",
         m: 1,
-        marginLeft: 1,
         '&:hover': { boxShadow: 'md', borderColor: 'neutral.outlinedHoverBorder' },
       }}
     >
@@ -50,7 +47,7 @@ const CardList = (props) => {
               size="lm"
               sx={{ m: 1 }}
             >
-              <EditNoteOutlinedIcon />
+              <EditNoteOutlinedIcon  onClick={() => { props.onEditClicked(props.itemdata)}}/>
             </IconButton>
           </Tooltip>
 

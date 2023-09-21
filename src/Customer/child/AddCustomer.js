@@ -1,13 +1,13 @@
 import React, { useState , useEffect } from 'react';
 import { Box } from '@mui/material';
-import InpTextField from '../shared/InpTextField';
-import {AddCustomerKeys ,AddCustomerValidations} from '../StaticObjects/AddCustomerObj';
-import ValidationCheck from '../shared/CommonBehaviour/ValidationCheck';
-import SaveButton from '../shared/ui/SaveButton';
+import InpTextField from '../../shared/InpTextField';
+import {AddCustomerKeys ,AddCustomerValidations} from '../../StaticObjects/AddCustomerObj';
+import ValidationCheck from '../../shared/CommonBehaviour/ValidationCheck';
+import SaveButton from '../../shared/ui/SaveButton';
 
 const AddCustomer = (props) => {
     
-    const [text1, setText1] = useState("");
+    const {ShopName ,Name ,Mobile ,City,PinCode } = {...AddCustomerKeys};
     let initialCustomerValue = {
          [AddCustomerKeys.ShopName]: { value: "", isValid: true ,ErrorMessage : ""  },
          [AddCustomerKeys.Name]: { value: "", isValid: true ,ErrorMessage : "" },
@@ -15,6 +15,16 @@ const AddCustomer = (props) => {
          [AddCustomerKeys.City]: { value: "", isValid: true ,ErrorMessage : "" },
          [AddCustomerKeys.PinCode]: { value: "", isValid: true ,ErrorMessage : "" }
     }
+    if(props.isEdit)
+    {    
+        
+         initialCustomerValue[ShopName].value = props.editCustomerObj[ShopName];
+         initialCustomerValue[Name].value = props.editCustomerObj[Name];
+         initialCustomerValue[Mobile].value = props.editCustomerObj[Mobile];
+         initialCustomerValue[City].value = props.editCustomerObj[City];
+         initialCustomerValue[PinCode].value = props.editCustomerObj[PinCode];
+    }
+
     let initalErrorInfo ={isLoading : false , isValidForm: true }
     const [addCustomer, setAddCustomer] = React.useState(initialCustomerValue);
     const [errorInfo, setErrorInfo] = React.useState(initalErrorInfo);
@@ -27,14 +37,13 @@ const AddCustomer = (props) => {
         }, true);
 
         setErrorInfo(prevErrorState => ({
-
             ...prevErrorState,
             isValidForm: isValidForm
         }));
     } , [addCustomer]);
 
 
-    console.log("state refresh", addCustomer);
+    
     const handleChange = (event , field) => {
 
         event.preventDefault();
@@ -62,16 +71,48 @@ const AddCustomer = (props) => {
             ...prevErrorState,
             isLoading: true
         }));
-        let saveCustomer = {...addCustomer};
+        let saveCustomer = {
+            [AddCustomerKeys.ShopName]: addCustomer[AddCustomerKeys.ShopName].value,
+            [AddCustomerKeys.Name]: addCustomer[AddCustomerKeys.Name].value,
+            [AddCustomerKeys.Mobile]: addCustomer[AddCustomerKeys.Mobile].value,
+            [AddCustomerKeys.City]: addCustomer[AddCustomerKeys.City].value,
+            [AddCustomerKeys.PinCode]: addCustomer[AddCustomerKeys.PinCode].value
+       }
+
         setTimeout( () => {
             setErrorInfo(prevErrorState => ({
-
                 ...prevErrorState,
                 isLoading: false
             }));
         } , 500)
         
+        props.onCustomerAdd(saveCustomer);
+        
+    };
 
+    
+    const EditAction = () =>  {
+        setErrorInfo(prevErrorState => ({
+            ...prevErrorState,
+            isLoading: true
+        }));
+        let editCustomer = {
+            CustomerID:props.editCustomerObj["CustomerID"],
+            [AddCustomerKeys.ShopName]: addCustomer[AddCustomerKeys.ShopName].value,
+            [AddCustomerKeys.Name]: addCustomer[AddCustomerKeys.Name].value,
+            [AddCustomerKeys.Mobile]: addCustomer[AddCustomerKeys.Mobile].value,
+            [AddCustomerKeys.City]: addCustomer[AddCustomerKeys.City].value,
+            [AddCustomerKeys.PinCode]: addCustomer[AddCustomerKeys.PinCode].value
+       }
+
+        setTimeout( () => {
+            setErrorInfo(prevErrorState => ({
+                ...prevErrorState,
+                isLoading: false
+            }));
+        } , 500)
+        
+        props.onCustomerEditSubmit(editCustomer);
         
     };
 
@@ -95,11 +136,12 @@ const AddCustomer = (props) => {
 
             {/* Name */}
             <InpTextField required={true}
-                error={!addCustomer[AddCustomerKeys.ShopName].isValid}
+                error={!addCustomer[AddCustomerKeys.Name].isValid}
                 id="outlined-required"
                 label="Name"
-                value={addCustomer[AddCustomerKeys.ShopName].value}
+                value={addCustomer[AddCustomerKeys.Name].value}
                 onChange={e => { handleChange(e , AddCustomerKeys.Name) }}
+                helperText={addCustomer[AddCustomerKeys.Name].ErrorMessage}
             />
 
             {/* Mobile */}
@@ -133,16 +175,30 @@ const AddCustomer = (props) => {
             />
 
             <br/>
-            <SaveButton 
-              loading={errorInfo.isLoading}
-              disabled={!errorInfo.isValidForm}
-              onClick={SaveAction}
-            />
+            {
+                !props.isEdit &&
+                <SaveButton 
+                  loading={errorInfo.isLoading}
+                  disabled={!errorInfo.isValidForm}
+                  onClick={SaveAction}
+                />
+            }
+            {
+                props.isEdit &&
+                <SaveButton 
+                  loading={errorInfo.isLoading}
+                  disabled={!errorInfo.isValidForm}
+                  onClick={EditAction}
+                />
+            }
 
 
         </Box>
     );
 
 }
+AddCustomer.defaultProps = {
+    isEdit: false
+  }
 export default AddCustomer;
 
